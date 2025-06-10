@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
 
 st.set_page_config(page_title="Montagem de Produtos", layout="wide")
 st.title("🔧 Análise de Montagem com Estoque Real (Algoritmo Greedy)")
@@ -137,10 +138,16 @@ st.markdown("""
 ), unsafe_allow_html=True)
 
 # === BOTÃO DE DOWNLOAD EXCEL ===
+# Gerar arquivo em memória
+output = BytesIO()
+with pd.ExcelWriter(output, engine='openpyxl') as writer:
+    resultado_df.to_excel(writer, index=False, sheet_name='Produtos Montáveis')
+output.seek(0)
+
 st.markdown("### 📥 Exportar resultados")
 st.download_button(
     label="📥 Baixar resultados em Excel",
-    data=resultado_df.to_excel(index=False, engine='openpyxl'),
+    data=output,
     file_name="produtos_montaveis.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
