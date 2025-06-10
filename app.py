@@ -76,6 +76,28 @@ resultado_df = pd.DataFrame(resultados)
 # Filtrar apenas produtos com unidades possíveis > 0
 resultado_df = resultado_df[resultado_df['UNIDADES POSSÍVEIS'] > 0]
 
+# === TOTALIZADORES DASHBOARD ===
+total_codigos_montaveis = resultado_df.shape[0]
+total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
+
+st.markdown("## 📊 Visão Geral")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric(
+        label="✅ Total de Códigos Montáveis",
+        value=f"{total_codigos_montaveis}",
+        help="Quantidade de produtos diferentes que podem ser montados com o estoque atual"
+    )
+
+with col2:
+    st.metric(
+        label="📦 Total Geral de Unidades Possíveis",
+        value=f"{total_unidades_montadas}",
+        help="Soma total de unidades que podem ser montadas"
+    )
+
 # Exibir tabela com coluna "UNIDADES POSSÍVEIS" antes da "CURVA"
 st.subheader("📋 Produtos que podem ser montados com estoque atual")
 st.dataframe(
