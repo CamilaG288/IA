@@ -70,13 +70,16 @@ for _, linha in produtos_ordenados.iterrows():
         'GRUPO PLANEJADOR': grupo
     })
 
-# Tabela final
+# Montar DataFrame final
 resultado_df = pd.DataFrame(resultados)
 
-# Exibir tabela formatada
+# Filtrar apenas produtos com unidades possíveis > 0
+resultado_df = resultado_df[resultado_df['UNIDADES POSSÍVEIS'] > 0]
+
+# Exibir tabela com "UNIDADES POSSÍVEIS" na frente
 st.subheader("📋 Produtos que podem ser montados com estoque atual")
 st.dataframe(
-    resultado_df[['PRODUTO', 'DESCRIÇÃO', 'CURVA', 'UNIDADES POSSÍVEIS', 'GRUPO PLANEJADOR']]
+    resultado_df[['UNIDADES POSSÍVEIS', 'PRODUTO', 'DESCRIÇÃO', 'CURVA', 'GRUPO PLANEJADOR']]
     .sort_values(by='UNIDADES POSSÍVEIS', ascending=False),
     use_container_width=True
 )
