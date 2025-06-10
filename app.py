@@ -136,3 +136,12 @@ st.markdown("""
     codigos=total_codigos_montaveis,
     unidades=total_unidades_montadas
 ), unsafe_allow_html=True)
+
+# === BOTÃO DE DOWNLOAD EXCEL ===
+st.markdown("### 📥 Exportar resultados")
+st.download_button(
+    label="📥 Baixar resultados em Excel",
+    data=resultado_df.to_excel(index=False, engine='openpyxl'),
+    file_name="produtos_montaveis.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
