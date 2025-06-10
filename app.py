@@ -5,7 +5,7 @@ st.set_page_config(page_title="Montagem de Produtos", layout="wide")
 st.title("🔧 Análise de Montagem com Estoque Real (Algoritmo Greedy)")
 
 # URLs diretas para os arquivos no GitHub (raw)
-url_estoque = "https://github.com/CamilaG288/IA/raw/main/ESTOQUE_DISPONÍVEL.xlsx"
+url_estoque = "https://github.com/CamilaG288/IA/raw/main/ESTOQUE_DISPONIVEL.xlsx"
 url_estrutura = "https://github.com/CamilaG288/IA/raw/main/ESTRUTURA.xlsx"
 url_curva = "https://github.com/CamilaG288/IA/raw/main/CURVA%20ABC.xlsx"
 
