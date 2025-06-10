@@ -65,8 +65,8 @@ for _, linha in produtos_ordenados.iterrows():
     resultados.append({
         'PRODUTO': produto,
         'DESCRIÇÃO': descricao,
-        'CURVA': curva,
         'UNIDADES POSSÍVEIS': qtd_montar,
+        'CURVA': curva,
         'GRUPO PLANEJADOR': grupo
     })
 
@@ -76,10 +76,10 @@ resultado_df = pd.DataFrame(resultados)
 # Filtrar apenas produtos com unidades possíveis > 0
 resultado_df = resultado_df[resultado_df['UNIDADES POSSÍVEIS'] > 0]
 
-# Exibir tabela com "UNIDADES POSSÍVEIS" na frente
+# Exibir tabela com coluna reordenada
 st.subheader("📋 Produtos que podem ser montados com estoque atual")
 st.dataframe(
-    resultado_df[['UNIDADES POSSÍVEIS', 'PRODUTO', 'DESCRIÇÃO', 'CURVA', 'GRUPO PLANEJADOR']]
+    resultado_df[['PRODUTO', 'DESCRIÇÃO', 'UNIDADES POSSÍVEIS', 'CURVA', 'GRUPO PLANEJADOR']]
     .sort_values(by='UNIDADES POSSÍVEIS', ascending=False),
     use_container_width=True
 )
