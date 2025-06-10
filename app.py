@@ -76,7 +76,7 @@ resultado_df = pd.DataFrame(resultados)
 # Filtrar apenas produtos com unidades possíveis > 0
 resultado_df = resultado_df[resultado_df['UNIDADES POSSÍVEIS'] > 0]
 
-# Exibir tabela com coluna "UNIDADES POSSÍVEIS" antes da "CURVA"
+# Exibir tabela
 st.subheader("📋 Produtos que podem ser montados com estoque atual")
 st.dataframe(
     resultado_df[['PRODUTO', 'DESCRIÇÃO', 'UNIDADES POSSÍVEIS', 'CURVA', 'GRUPO PLANEJADOR']]
@@ -91,16 +91,16 @@ total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
 # Espaço visual
 st.markdown("## ")
 
-# Cartões com HTML + CSS
+# Cartões com HTML + CSS (com chaves escapadas)
 st.markdown("""
 <style>
-.card-container {
+.card-container {{
     display: flex;
     gap: 20px;
     margin-top: 20px;
     justify-content: center;
-}
-.card {
+}}
+.card {{
     flex: 1;
     padding: 20px;
     border-radius: 10px;
@@ -110,19 +110,19 @@ st.markdown("""
     text-align: center;
     box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     max-width: 300px;
-}
-.card-blue {
+}}
+.card-blue {{
     background-color: #1976D2;
-}
-.card-green {
+}}
+.card-green {{
     background-color: #2E7D32;
-}
-.card small {
+}}
+.card small {{
     display: block;
     font-size: 14px;
     font-weight: normal;
     margin-top: 5px;
-}
+}}
 </style>
 
 <div class="card-container">
