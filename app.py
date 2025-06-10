@@ -88,16 +88,13 @@ st.dataframe(
 total_codigos_montaveis = resultado_df.shape[0]
 total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
 
-
-st.markdown("## ")
-
 # Cartões com HTML + CSS (com chaves escapadas)
 st.markdown("""
 <style>
 .card-container {{
     display: flex;
     gap: 20px;
-    margin-top: 20px;
+    margin-top: 10px;
     justify-content: center;
 }}
 .card {{
