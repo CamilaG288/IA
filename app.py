@@ -42,4 +42,4 @@ for _, linha in produtos_ordenados.iterrows():
     estrutura_prod = estrutura_com_prioridade[estrutura_com_prioridade['PRODUTO'] == produto]
 
     min_montar = float('inf')
-    for _, comp in estrutura_prod.iterrows():
+    for _, comp in estrutura_prod.iterrows()
