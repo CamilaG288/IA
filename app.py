@@ -4,7 +4,7 @@ import pandas as pd
 st.set_page_config(page_title="Montagem de Produtos", layout="wide")
 st.title("🔧 Análise de Montagem com Estoque Real (Algoritmo Greedy)")
 
-# URLs dos arquivos no GitHub (sem acento no nome do estoque)
+# URLs dos arquivos no GitHub
 url_estoque = "https://github.com/CamilaG288/IA/raw/main/ESTOQUE_DISPONIVEL.xlsx"
 url_estrutura = "https://github.com/CamilaG288/IA/raw/main/ESTRUTURA.xlsx"
 url_curva = "https://github.com/CamilaG288/IA/raw/main/CURVA%20ABC.xlsx"
@@ -14,7 +14,7 @@ estoque_df = pd.read_excel(url_estoque)
 estrutura_df = pd.read_excel(url_estrutura)
 curva_df = pd.read_excel(url_curva)
 
-# Seleção e padronização das colunas
+# Seleção e padronização
 estoque_df = estoque_df[['COMPONENTE', 'QUANTIDADE']]
 estrutura_df = estrutura_df[['PRODUTO', 'COMPONENTE', 'QUANTIDADE']]
 curva_df = curva_df[['PRODUTO', 'DESCRICAO PRODUTO', 'CURVA', 'DESCRICAO GRUPO PLANEJADOR', 'PRIORIDADE']]
@@ -64,3 +64,19 @@ for _, linha in produtos_ordenados.iterrows():
 
     resultados.append({
         'PRODUTO': produto,
+        'DESCRIÇÃO': descricao,
+        'CURVA': curva,
+        'UNIDADES POSSÍVEIS': qtd_montar,
+        'GRUPO PLANEJADOR': grupo
+    })
+
+# Tabela final
+resultado_df = pd.DataFrame(resultados)
+
+# Exibir tabela formatada
+st.subheader("📋 Produtos que podem ser montados com estoque atual")
+st.dataframe(
+    resultado_df[['PRODUTO', 'DESCRIÇÃO', 'CURVA', 'UNIDADES POSSÍVEIS', 'GRUPO PLANEJADOR']]
+    .sort_values(by='UNIDADES POSSÍVEIS', ascending=False),
+    use_container_width=True
+)
