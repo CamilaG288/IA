@@ -64,19 +64,3 @@ for _, linha in produtos_ordenados.iterrows():
 
     resultados.append({
         'PRODUTO': produto,
-        'DESCRIÇÃO': descricao,
-        'CURVA': curva,
-        'GRUPO PLANEJADOR': grupo,
-        'UNIDADES POSSÍVEIS': qtd_montar
-    })
-
-# Montar DataFrame final
-resultado_df = pd.DataFrame(resultados)
-
-# Exibir com colunas ordenadas
-st.subheader("📋 Produtos que podem ser montados com estoque atual")
-st.dataframe(
-    resultado_df[['PRODUTO', 'DESCRIÇÃO', 'CURVA', 'GRUPO PLANEJADOR', 'UNIDADES POSSÍVEIS']]
-    .sort_values(by='UNIDADES POSSÍVEIS', ascending=False),
-    use_container_width=True
-)
