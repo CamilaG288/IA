@@ -76,7 +76,7 @@ resultado_df = pd.DataFrame(resultados)
 # Filtrar apenas produtos com unidades possíveis > 0
 resultado_df = resultado_df[resultado_df['UNIDADES POSSÍVEIS'] > 0]
 
-# Exibir tabela com coluna reordenada
+# Exibir tabela com coluna "UNIDADES POSSÍVEIS" antes da "CURVA"
 st.subheader("📋 Produtos que podem ser montados com estoque atual")
 st.dataframe(
     resultado_df[['PRODUTO', 'DESCRIÇÃO', 'UNIDADES POSSÍVEIS', 'CURVA', 'GRUPO PLANEJADOR']]
