@@ -85,30 +85,6 @@ st.dataframe(
 total_codigos_montaveis = resultado_df.shape[0]
 total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
 
-st.markdown("""
-<style>
-.card-container {{ display: flex; gap: 20px; justify-content: center; }}
-.card {{ flex: 1; padding: 20px; border-radius: 10px; color: white; font-size: 22px;
-         font-weight: bold; text-align: center; max-width: 300px; }}
-.card-blue {{ background-color: #1976D2; }}
-.card-green {{ background-color: #2E7D32; }}
-.card small {{ display: block; font-size: 14px; font-weight: normal; margin-top: 5px; }}
-</style>
-<div class="card-container">
-    <div class="card card-blue">{codigos}<small>Total de Códigos Montáveis</small></div>
-    <div class="card card-green">{unidades}<small>Total de Unidades Possíveis</small></div>
-</div>
-""".format(codigos=total_codigos_montaveis, unidades=total_unidades_montadas), unsafe_allow_html=True)
-
-output = BytesIO()
-with pd.ExcelWriter(output, engine='openpyxl') as writer:
-    resultado_df.to_excel(writer, index=False, sheet_name='Montagem')
-output.seek(0)
-
-st.download_button("📥 Baixar Excel (Montagem)", data=output,
-                   file_name="produtos_montaveis.xlsx",
-                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-
 # =============================
 # Pedidos em Carteira
 # =============================
@@ -128,6 +104,8 @@ linhas_atendidas = []
 for _, pedido in pedidos_df.iterrows():
     produto = pedido['PRODUTO']
     qtd_necessaria = pedido['QUANTIDADE PRODUZIR']
+    if qtd_necessaria <= 0:
+        continue
     estrutura_prod = estrutura_df[estrutura_df['PRODUTO'] == produto]
     if estrutura_prod.empty:
         continue
@@ -152,13 +130,49 @@ for _, pedido in pedidos_df.iterrows():
             'LINHA': pedido['LINHA'],
             'PRODUTO': produto,
             'QUANTIDADE PRODUZIR': qtd_necessaria,
-            'DATA PREVISTA': pedido['DATA PREVISTA'],
-            'DATA SOLICITADA': pedido['DATA SOLICITADA']
+            'DATA PREVISTA': pedido['DATA PREVISTA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA PREVISTA']) else '',
+            'DATA SOLICITADA': pedido['DATA SOLICITADA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA SOLICITADA']) else ''
         })
 
 resultado_df2 = pd.DataFrame(linhas_atendidas)
 st.subheader("📋 Linhas de Pedido que Podem Ser Atendidas")
 st.dataframe(resultado_df2, use_container_width=True)
+
+total_codigos_pedidos = resultado_df2.shape[0]
+total_quantidade_pedidos = resultado_df2['QUANTIDADE PRODUZIR'].sum()
+
+st.markdown("""
+<style>
+.card-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+.card { flex: 1; padding: 20px; border-radius: 10px; color: white; font-size: 22px;
+         font-weight: bold; text-align: center; max-width: 300px; }
+.card-blue { background-color: #64B5F6; }  /* azul claro */
+.card-green { background-color: #81C784; }  /* verde claro */
+.card-orange { background-color: #F9A825; }
+.card-purple { background-color: #6A1B9A; }
+.card small { display: block; font-size: 14px; font-weight: normal; margin-top: 5px; }
+</style>
+<div class="card-container">
+    <div class="card card-blue">{codigos}<small>Total de Códigos Montáveis</small></div>
+    <div class="card card-green">{unidades}<small>Total de Unidades Possíveis</small></div>
+    <div class="card card-orange">{cod_pedidos}<small>Total de Linhas de Pedido Atendidas</small></div>
+    <div class="card card-purple">{qtd_pedidos}<small>Total de Quantidades Atendidas</small></div>
+</div>
+""".format(
+    codigos=total_codigos_montaveis,
+    unidades=total_unidades_montadas,
+    cod_pedidos=total_codigos_pedidos,
+    qtd_pedidos=total_quantidade_pedidos
+), unsafe_allow_html=True)
+
+output = BytesIO()
+with pd.ExcelWriter(output, engine='openpyxl') as writer:
+    resultado_df.to_excel(writer, index=False, sheet_name='Montagem')
+output.seek(0)
+
+st.download_button("📥 Baixar Excel (Montagem)", data=output,
+                   file_name="produtos_montaveis.xlsx",
+                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 output2 = BytesIO()
 with pd.ExcelWriter(output2, engine='openpyxl') as writer:
