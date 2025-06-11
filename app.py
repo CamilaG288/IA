@@ -85,9 +85,10 @@ st.dataframe(
 # =============================
 # Pedidos em Carteira
 # =============================
-pedidos_df = pd.read_excel(url_pedidos)
-pedidos_df['DATA PREVISTA'] = pd.to_datetime(pedidos_df['DATA PREVISTA'], errors='coerce')
-pedidos_df['DATA SOLICITADA'] = pd.to_datetime(pedidos_df['DATA SOLICITADA'], errors='coerce')
+pedidos_df = pd.read_excel(url_pedidos, dtype=str)
+pedidos_df['QUANTIDADE PRODUZIR'] = pd.to_numeric(pedidos_df['QUANTIDADE PRODUZIR'], errors='coerce')
+pedidos_df['DATA PREVISTA'] = pd.to_datetime(pedidos_df['DATA PREVISTA'], errors='coerce').dt.strftime('%d/%m/%Y')
+pedidos_df['DATA SOLICITADA'] = pd.to_datetime(pedidos_df['DATA SOLICITADA'], errors='coerce').dt.strftime('%d/%m/%Y')
 
 estrutura_df = pd.read_excel(url_estrutura_pedidos)
 estoque_df = pd.read_excel(url_estoque_alx)
@@ -98,14 +99,13 @@ estrutura_df['COMPONENTE'] = estrutura_df['COMPONENTE'].astype(str).str.strip()
 estoque_df['COMPONENTE'] = estoque_df['COMPONENTE'].astype(str).str.strip()
 
 estoque_atual = estoque_df.groupby('COMPONENTE')['QUANTIDADE'].sum().to_dict()
+pedidos_df = pedidos_df[pedidos_df['QUANTIDADE PRODUZIR'] > 0]
 pedidos_df = pedidos_df.sort_values(by='DATA PREVISTA')
 
 linhas_atendidas = []
 for _, pedido in pedidos_df.iterrows():
     produto = pedido['PRODUTO']
     qtd_necessaria = pedido['QUANTIDADE PRODUZIR']
-    if pd.isna(qtd_necessaria) or qtd_necessaria <= 0:
-        continue
     estrutura_prod = estrutura_df[estrutura_df['PRODUTO'] == produto]
     if estrutura_prod.empty:
         continue
@@ -130,6 +130,6 @@ for _, pedido in pedidos_df.iterrows():
             'LINHA': pedido['LINHA'],
             'PRODUTO': produto,
             'QUANTIDADE PRODUZIR': qtd_necessaria,
-            'DATA PREVISTA': pedido['DATA PREVISTA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA PREVISTA']) else '',
-            'DATA SOLICITADA': pedido['DATA SOLICITADA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA SOLICITADA']) else ''
+            'DATA PREVISTA': pedido['DATA PREVISTA'],
+            'DATA SOLICITADA': pedido['DATA SOLICITADA']
         })
