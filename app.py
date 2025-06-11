@@ -82,13 +82,10 @@ st.dataframe(
     use_container_width=True
 )
 
-total_codigos_montaveis = resultado_df.shape[0]
-total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
-
 # =============================
 # Pedidos em Carteira
 # =============================
-pedidos_df = pd.read_excel(url_pedidos)
+pedidos_df = pd.read_excel(url_pedidos, parse_dates=['DATA PREVISTA', 'DATA SOLICITADA'])
 estrutura_df = pd.read_excel(url_estrutura_pedidos)
 estoque_df = pd.read_excel(url_estoque_alx)
 
@@ -138,9 +135,13 @@ resultado_df2 = pd.DataFrame(linhas_atendidas)
 st.subheader("📋 Linhas de Pedido que Podem Ser Atendidas")
 st.dataframe(resultado_df2, use_container_width=True)
 
+# Totalizadores
+total_codigos_montaveis = resultado_df.shape[0]
+total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
 total_codigos_pedidos = resultado_df2.shape[0]
 total_quantidade_pedidos = resultado_df2['QUANTIDADE PRODUZIR'].sum()
 
+# Cards
 st.markdown("""
 <style>
 .card-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
@@ -165,6 +166,7 @@ st.markdown("""
     qtd_pedidos=total_quantidade_pedidos
 ), unsafe_allow_html=True)
 
+# Download Excel
 output = BytesIO()
 with pd.ExcelWriter(output, engine='openpyxl') as writer:
     resultado_df.to_excel(writer, index=False, sheet_name='Montagem')
