@@ -85,7 +85,10 @@ st.dataframe(
 # =============================
 # Pedidos em Carteira
 # =============================
-pedidos_df = pd.read_excel(url_pedidos, parse_dates=['DATA PREVISTA', 'DATA SOLICITADA'])
+pedidos_df = pd.read_excel(url_pedidos)
+pedidos_df['DATA PREVISTA'] = pd.to_datetime(pedidos_df['DATA PREVISTA'], errors='coerce')
+pedidos_df['DATA SOLICITADA'] = pd.to_datetime(pedidos_df['DATA SOLICITADA'], errors='coerce')
+
 estrutura_df = pd.read_excel(url_estrutura_pedidos)
 estoque_df = pd.read_excel(url_estoque_alx)
 
@@ -130,57 +133,3 @@ for _, pedido in pedidos_df.iterrows():
             'DATA PREVISTA': pedido['DATA PREVISTA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA PREVISTA']) else '',
             'DATA SOLICITADA': pedido['DATA SOLICITADA'].strftime('%d/%m/%Y') if not pd.isna(pedido['DATA SOLICITADA']) else ''
         })
-
-resultado_df2 = pd.DataFrame(linhas_atendidas)
-st.subheader("📋 Linhas de Pedido que Podem Ser Atendidas")
-st.dataframe(resultado_df2, use_container_width=True)
-
-# Totalizadores
-total_codigos_montaveis = resultado_df.shape[0]
-total_unidades_montadas = resultado_df['UNIDADES POSSÍVEIS'].sum()
-total_codigos_pedidos = resultado_df2.shape[0]
-total_quantidade_pedidos = resultado_df2['QUANTIDADE PRODUZIR'].sum()
-
-# Cards
-st.markdown("""
-<style>
-.card-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-.card { flex: 1; padding: 20px; border-radius: 10px; color: white; font-size: 22px;
-         font-weight: bold; text-align: center; max-width: 300px; }
-.card-blue { background-color: #64B5F6; }  /* azul claro */
-.card-green { background-color: #81C784; }  /* verde claro */
-.card-orange { background-color: #F9A825; }
-.card-purple { background-color: #6A1B9A; }
-.card small { display: block; font-size: 14px; font-weight: normal; margin-top: 5px; }
-</style>
-<div class="card-container">
-    <div class="card card-blue">{codigos}<small>Total de Códigos Montáveis</small></div>
-    <div class="card card-green">{unidades}<small>Total de Unidades Possíveis</small></div>
-    <div class="card card-orange">{cod_pedidos}<small>Total de Linhas de Pedido Atendidas</small></div>
-    <div class="card card-purple">{qtd_pedidos}<small>Total de Quantidades Atendidas</small></div>
-</div>
-""".format(
-    codigos=total_codigos_montaveis,
-    unidades=total_unidades_montadas,
-    cod_pedidos=total_codigos_pedidos,
-    qtd_pedidos=total_quantidade_pedidos
-), unsafe_allow_html=True)
-
-# Download Excel
-output = BytesIO()
-with pd.ExcelWriter(output, engine='openpyxl') as writer:
-    resultado_df.to_excel(writer, index=False, sheet_name='Montagem')
-output.seek(0)
-
-st.download_button("📥 Baixar Excel (Montagem)", data=output,
-                   file_name="produtos_montaveis.xlsx",
-                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-
-output2 = BytesIO()
-with pd.ExcelWriter(output2, engine='openpyxl') as writer:
-    resultado_df2.to_excel(writer, index=False, sheet_name='Pedidos Possíveis')
-output2.seek(0)
-
-st.download_button("📥 Baixar Excel (Pedidos)", data=output2,
-                   file_name="pedidos_possiveis.xlsx",
-                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
