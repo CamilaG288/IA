@@ -104,7 +104,7 @@ linhas_atendidas = []
 for _, pedido in pedidos_df.iterrows():
     produto = pedido['PRODUTO']
     qtd_necessaria = pedido['QUANTIDADE PRODUZIR']
-    if qtd_necessaria <= 0:
+    if pd.isna(qtd_necessaria) or qtd_necessaria <= 0:
         continue
     estrutura_prod = estrutura_df[estrutura_df['PRODUTO'] == produto]
     if estrutura_prod.empty:
