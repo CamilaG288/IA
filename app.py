@@ -106,6 +106,8 @@ linhas_atendidas = []
 for _, pedido in pedidos_df.iterrows():
     produto = pedido['PRODUTO']
     qtd_necessaria = pedido['QUANTIDADE PRODUZIR']
+    if pd.isna(qtd_necessaria) or qtd_necessaria <= 0:
+        continue
     estrutura_prod = estrutura_df[estrutura_df['PRODUTO'] == produto]
     if estrutura_prod.empty:
         continue
@@ -133,3 +135,9 @@ for _, pedido in pedidos_df.iterrows():
             'DATA PREVISTA': pedido['DATA PREVISTA'],
             'DATA SOLICITADA': pedido['DATA SOLICITADA']
         })
+
+resultado_df2 = pd.DataFrame(linhas_atendidas)
+resultado_df2 = resultado_df2[resultado_df2['QUANTIDADE PRODUZIR'] > 0]
+
+st.subheader("📋 Linhas de Pedido que Podem Ser Atendidas")
+st.dataframe(resultado_df2, use_container_width=True)
