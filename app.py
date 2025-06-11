@@ -87,6 +87,7 @@ st.dataframe(
 # =============================
 pedidos_df = pd.read_excel(url_pedidos, dtype=str)
 pedidos_df['QUANTIDADE PRODUZIR'] = pd.to_numeric(pedidos_df['QUANTIDADE PRODUZIR'], errors='coerce')
+pedidos_df = pedidos_df[pedidos_df['QUANTIDADE PRODUZIR'] > 0].copy()
 pedidos_df['DATA PREVISTA'] = pd.to_datetime(pedidos_df['DATA PREVISTA'], errors='coerce').dt.strftime('%d/%m/%Y')
 pedidos_df['DATA SOLICITADA'] = pd.to_datetime(pedidos_df['DATA SOLICITADA'], errors='coerce').dt.strftime('%d/%m/%Y')
 
@@ -99,7 +100,6 @@ estrutura_df['COMPONENTE'] = estrutura_df['COMPONENTE'].astype(str).str.strip()
 estoque_df['COMPONENTE'] = estoque_df['COMPONENTE'].astype(str).str.strip()
 
 estoque_atual = estoque_df.groupby('COMPONENTE')['QUANTIDADE'].sum().to_dict()
-pedidos_df = pedidos_df[pedidos_df['QUANTIDADE PRODUZIR'] > 0]
 pedidos_df = pedidos_df.sort_values(by='DATA PREVISTA')
 
 linhas_atendidas = []
